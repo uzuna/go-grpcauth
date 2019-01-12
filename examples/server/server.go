@@ -6,7 +6,7 @@ import (
 	"log"
 	"net"
 
-	"github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
 	"github.com/uzuna/go-grpcauth/authz"
 	pb "github.com/uzuna/go-grpcauth/examples/pb"
@@ -14,7 +14,8 @@ import (
 )
 
 var (
-	port = flag.Int("port", 10000, "The Server Port")
+	port    = flag.Int("port", 10000, "The Server Port")
+	keysURL = "https://login.microsoftonline.com/common/discovery/v2.0/keys"
 )
 
 func main() {
@@ -26,11 +27,17 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
+	atf, err := AccessTokenAuthentication(keysURL)
+	if err != nil {
+		log.Fatalf("Fail Load JWS Keys: %v", err)
+	}
+
 	var opts []grpc.ServerOption
 	authopts := grpc.UnaryInterceptor(
 		// Add Authentication/Authoriza Interceptor
 		grpc_middleware.ChainUnaryServer(
-			grpc_auth.UnaryServerInterceptor(DebugAuthentication()),
+			// grpc_auth.UnaryServerInterceptor(DebugAuthentication()),
+			grpc_auth.UnaryServerInterceptor(atf),
 			authz.UnaryServerInterceptor(),
 		),
 	)
