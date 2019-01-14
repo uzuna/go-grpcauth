@@ -3,7 +3,6 @@ package oauthclient
 import (
 	"crypto/rand"
 	"fmt"
-	"log"
 	"net"
 	"net/http"
 	"os"
@@ -72,6 +71,7 @@ func GetAccessToken(config Config) (string, error) {
 
 	state := fmt.Sprintf("%x", stateBytes)
 	err = open.Start(oauthConfig.AuthCodeURL(state,
+		oauth2.SetAuthURLParam("response_mode", "form_post"),
 		oauth2.SetAuthURLParam("response_type", "id_token"),
 		oauth2.SetAuthURLParam("nonce", "0011223"),
 	))
@@ -81,14 +81,18 @@ func GetAccessToken(config Config) (string, error) {
 
 	quit := make(chan string)
 	go http.Serve(l, http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-		if req.URL.Path == "/" {
-			w.Write([]byte(`<script>location.href = "/close?" + location.hash.substring(1);</script>`))
-		} else {
-			w.Write([]byte(`<script>window.open("about:blank","_self").close()</script>`))
-			w.(http.Flusher).Flush()
-			log.Println(req.URL.Query())
-			quit <- req.URL.Query().Get("access_token")
+		err := req.ParseForm()
+		if err != nil {
+			http.Error(w, "fail parse form", 503)
+			return
 		}
+		// log.Println()
+		// log.Println(req.Form.Get("id_token"))
+
+		// この例ではMicrosoft AzureAD を利用しているのでid_token
+		quit <- req.Form.Get("id_token")
+		w.Write([]byte(`Accept`))
+		w.(http.Flusher).Flush()
 	}))
 	return <-quit, nil
 }
