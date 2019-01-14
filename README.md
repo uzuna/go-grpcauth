@@ -15,3 +15,7 @@
 
 
 - [microsoftonline well-known](https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration)
+
+
+gRPC-Webを使うには実装しているServerが必要
+Officialの例においてはEnvoy

@@ -1,0 +1,11 @@
+version: '3'
+services:
+  envoy:
+    image: envoyproxy/envoy:latest
+    volumes:
+      - "./envoy.yml:/etc/envoy/envoy.yaml:ro"
+    network_mode: host
+    command: ["/usr/local/bin/envoy","-c","/etc/envoy/envoy.yaml","-l", "info"]
+    ports:
+      - "9901:9901"
+      - "18080:18080"

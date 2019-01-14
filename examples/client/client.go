@@ -15,7 +15,7 @@ import (
 	"google.golang.org/grpc/metadata"
 )
 
-var serverAddr = flag.String("server_addr", "localhost:10000", "The server address in format of [host:port]")
+var serverAddr = flag.String("server_addr", "localhost:443", "The server address in format of [host:port]")
 
 func main() {
 	flag.Parse()
@@ -56,7 +56,7 @@ func main() {
 	defer cancel()
 
 	// grpc metadataにAuthorization: Bearer <Token>を与える
-
+	log.Println(token)
 	ctx = ctxWithToken(ctx, "bearer", token)
 
 	req := &pb.HelloRequest{

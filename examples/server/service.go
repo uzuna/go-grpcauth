@@ -16,7 +16,10 @@ func (k *contextKey) String() string { return "net/http context value " + k.name
 type helloServer struct{}
 
 func (s *helloServer) Visit(ctx context.Context, req *pb.HelloRequest) (*pb.HelloReply, error) {
-	email := ctx.Value(CtxKeyEmail).(string)
+	email, ok := ctx.Value(CtxKeyEmail).(string)
+	if !ok {
+		email = "Unknown User"
+	}
 	return &pb.HelloReply{
 		Message: fmt.Sprintf("Hello %s. Echo: %s", email, req.Message),
 	}, nil

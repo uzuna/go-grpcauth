@@ -28,6 +28,7 @@ func main() {
 	}
 
 	atf, err := AccessTokenAuthentication(keysURL)
+	_ = atf
 	if err != nil {
 		log.Fatalf("Fail Load JWS Keys: %v", err)
 	}
@@ -36,8 +37,8 @@ func main() {
 	authopts := grpc.UnaryInterceptor(
 		// Add Authentication/Authoriza Interceptor
 		grpc_middleware.ChainUnaryServer(
-			// grpc_auth.UnaryServerInterceptor(DebugAuthentication()),
-			grpc_auth.UnaryServerInterceptor(atf),
+			grpc_auth.UnaryServerInterceptor(DebugAuthentication()),
+			// grpc_auth.UnaryServerInterceptor(atf),
 			authz.UnaryServerInterceptor(),
 		),
 	)
