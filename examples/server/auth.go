@@ -18,12 +18,14 @@ var (
 // DebugAuthentication 目視Debug用
 func DebugAuthentication() grpc_auth.AuthFunc {
 	return func(ctx context.Context) (context.Context, error) {
+		log.Println("token")
 		// tokenの目視確認
 		token, err := grpc_auth.AuthFromMD(ctx, "bearer")
 		if err != nil {
 			return nil, errors.WithStack(err)
 		}
-		log.Println(token)
+		_ = token
+		// log.Println(token)
 
 		return ctx, nil
 	}

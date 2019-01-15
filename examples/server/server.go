@@ -21,7 +21,7 @@ var (
 func main() {
 	// Parse flag and init options
 	flag.Parse()
-	listenHost := fmt.Sprintf("localhost:%d", *port)
+	listenHost := fmt.Sprintf(":%d", *port)
 	lis, err := net.Listen("tcp", listenHost)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)

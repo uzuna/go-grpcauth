@@ -15,7 +15,9 @@ console.log(helloService)
 
 var req = new HelloRequest("from web")
 
-var metadata = {}
+var metadata = {
+  Authorization: "Bearer test",
+}
 helloService.visit(req, metadata, (err, res) => {
-  console.log(err, res)
+  console.log(err, res.getMessage())
 })

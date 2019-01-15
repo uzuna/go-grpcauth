@@ -4,8 +4,13 @@ services:
     image: envoyproxy/envoy:latest
     volumes:
       - "./envoy.yml:/etc/envoy/envoy.yaml:ro"
-    network_mode: host
-    command: ["/usr/local/bin/envoy","-c","/etc/envoy/envoy.yaml","-l", "info"]
+    # network_mode: host
+    command: ["/usr/local/bin/envoy","-c","/etc/envoy/envoy.yaml","-l", "trace"]
     ports:
       - "9901:9901"
+      - "9980:9980"
       - "18080:18080"
+    expose:
+      - "9901"
+      - "9980"
+      - "18080"
